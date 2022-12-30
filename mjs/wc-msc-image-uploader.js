@@ -873,7 +873,7 @@ export class MscImageUploader extends HTMLElement {
       }
     );
 
-    return units?.[index] || activeTarget;
+    return units[index] || activeTarget;
   }
 
   async #fetchImageInfo(blob) {
@@ -1172,7 +1172,7 @@ export class MscImageUploader extends HTMLElement {
       case 'ArrowDown': {
         let nextIndex = (currentIndex + 1) + columns;
 
-        if (!units?.[nextIndex - 1]) {
+        if (!units[nextIndex - 1]) {
           for (let i=-1;++i<rows;) {
             let idx = (currentIndex + 1) - (i * columns);
             if (units[idx - 1]) {
@@ -1187,7 +1187,7 @@ export class MscImageUploader extends HTMLElement {
 
       case 'ArrowUp': {
         let prevIndex = (currentIndex + 1) - columns;
-        if (!units?.[prevIndex - 1]) {
+        if (!units[prevIndex - 1]) {
           for (let i=-1;++i<rows;) {
             let idx = (currentIndex + 1) + (i * columns);
             if (units[idx - 1]) {
@@ -1257,7 +1257,7 @@ export class MscImageUploader extends HTMLElement {
       target: { files }
     } = evt;
 
-    if (!files || !files?.length) {
+    if (!files || !files.length) {
       return;
     }
 
