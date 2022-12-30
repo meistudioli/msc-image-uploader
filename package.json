@@ -1,0 +1,26 @@
+{
+  "name": "msc-image-uploader",
+  "version": "1.0.0",
+  "description": "<msc-image-uploader /> is a web component based image uploader. Users could pick & upload images by 「file picker」、「drag & drop」and even direct「paste」image content. Besides that, users could also change images sorting through 「drag & drop」or 「keyboard arrow keys」. With rich config setting, developers can set up placeholder and limitation for different scenarios.",
+  "main": "index.html",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/meistudioli/msc-image-uploader.git"
+  },
+  "keywords": [
+    "web",
+    "front-end",
+    "web component",
+    "image",
+    "uploader"
+  ],
+  "author": "Paul Li",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/meistudioli/msc-image-uploader/issues"
+  },
+  "homepage": "https://github.com/meistudioli/msc-image-uploader#readme"
+}

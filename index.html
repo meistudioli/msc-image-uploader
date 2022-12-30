@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<title>Web Component: &lt;msc-image-uploader /&gt; - web components based image uploader</title>
+<meta name="description" content="<msc-image-uploader /> is a web component based image uploader. Users could pick & upload images by 「file picker」、「drag & drop」and even direct「paste」image content. Besides that, users could also change images sorting through 「drag & drop」or 「keyboard arrow keys」. With rich config setting, developers can set up placeholder and limitation for different scenarios." />
+<script type="module" src="mjs/wc-msc-image-uploader.js"></script>
+<style>
+/* reset */
+body,div,ul,ol,li,h1,h2,h3,h4,h5,h6,pre,form,fieldset,legend,input,textarea,p,article,aside,figcaption,figure,nav,section,mark,audio,video,main{margin:0;padding:0}
+article,aside,figcaption,figure,nav,section,main{display:block}
+fieldset,img{border:0}
+address,caption,cite,em,strong{font-style:normal;font-weight:400}
+ol,ul{list-style:none}
+caption{text-align:left}
+h1,h2,h3,h4,h5,h6{font-size:100%;font-weight:400}
+abbr{border:0;font-variant:normal}
+input,textarea,select{font-family:inherit;font-size:inherit;font-weight:inherit;}
+body{-webkit-text-size-adjust:none}
+select,input,button,textarea{font:100% arial,helvetica,clean,sans-serif;}
+del{font-style:normal;text-decoration:none}
+pre{font-family:monospace;line-height:100%}
+progress{-webkit-appearance:none;appearance:none;overflow:hidden;border:0 none;}
+
+/* page */
+html,body{font-family:system-ui,sans-serif;text-size-adjust:100%;-ms-text-size-adjust:100%;-webkit-text-size-adjust:100%;font-size:16px;}
+#hd,#ft{display:none;}
+
+body{position:relative;inline-size:100vw;block-size:100vh;margin:0 ;}
+.wrap{position:absolute;inset-inline-start:50%;inset-block-start:50%;transform:translate(-50%,-50%);inline-size:100%;max-inline-size:min(600px, calc(100% - 2em));box-sizing:border-box;}
+.hero{inline-size:100%;background-color:#dce2f0;border-radius:.5em;padding:2em;box-sizing:border-box;}
+
+msc-image-uploader:not(:defined){display:none;}
+
+.msc-image-uploader-wrap {
+  --msc-image-uploader-gap: 12px;
+  --msc-image-uploader-label-bgc: rgba(232 234 237/.7);
+  --msc-image-uploader-unit-overlay-color: rgba(0 0 0/.15);
+  --msc-image-uploader-unit-focus-border-color: #69a2f9;
+  --msc-image-uploader-loading-color: rgba(0 0 0/.4);
+  --msc-image-uploader-loading-bgc: rgba(255 255 255/.05);
+}
+.msc-image-uploader-wrap{inline-size:min(100%,1000px);border-radius:1em;margin:2em auto;}
+.msc-image-uploader-wrap__info{font-size:.875em;color:var(--intro-text);line-height:2;text-align:right;padding-inline-end:var(--msc-image-uploader-gap);}
+
+@media screen and (min-width: 768px) {
+  .msc-image-uploader-wrap {
+    --msc-image-uploader-column-count: 8;
+  }
+}
+
+@media (prefers-color-scheme: dark) {
+  .msc-image-uploader-wrap {
+    --msc-image-uploader-label-bgc: rgba(232 234 237/.04);
+    --msc-image-uploader-unit-overlay-color: rgba(255 255 255/.15);
+    --msc-image-uploader-unit-focus-border-color: #69a2f9;
+    --msc-image-uploader-loading-color: rgba(255 255 255);
+    --msc-image-uploader-loading-bgc: rgba(0 0 0/.05);
+  }
+}
+
+.msc-image-uploader-wrap msc-image-uploader::part(decorations-1)::before {
+  position: absolute;
+  inset-inline-start: 0;
+  inset-block-start: 0;
+  content: 'cover';
+  font-size: 12px;
+  color: #fff;
+  background-color: rgba(0 0 0/.8);
+  padding: 2px 6px;
+  border-end-end-radius: 4px;
+  display: none;
+}
+</style>
+</head>
+
+<body>
+
+<div class="wrap">
+</div>
+
+<div class="msc-image-uploader-wrap">
+  <msc-image-uploader>
+    <script type="application/json">
+      {
+        "limitation": {
+          "size": 52428800,
+          "accept": ".jpg,.jpeg,.png,.gif,.webp,.avif",
+          "width": 400,
+          "height": 400,
+          "maxcount": 25
+        },
+        "placeholder": [
+          {
+            "src": "https://picsum.photos/id/111/200/200"
+          },
+          {
+            "src": "https://picsum.photos/id/146/200/200"
+          },
+          {
+            "src": "https://picsum.photos/id/183/200/200"
+          },
+          {
+            "src": "https://picsum.photos/id/212/200/200"
+          },
+          {
+            "src": "https://picsum.photos/id/41/200/200"
+          },
+          {
+            "src": "https://picsum.photos/id/56/200/200"
+          },
+          {
+            "src": "https://picsum.photos/id/57/200/200"
+          },
+          {
+            "src": "https://picsum.photos/id/78/200/200"
+          },
+          {
+            "src": "https://picsum.photos/id/106/200/200"
+          },
+          {
+            "src": "https://picsum.photos/id/107/200/200"
+          },
+          {
+            "src": "https://picsum.photos/id/110/200/200"
+          },
+          {
+            "src": "https://picsum.photos/id/167/200/200"
+          },
+          {
+            "src": "https://picsum.photos/id/175/200/200"
+          },
+          {
+            "src": "https://picsum.photos/id/195/200/200"
+          }
+        ],
+        "webservice": {
+          "url": "https://blog.lalacube.com/mei/WS_msc-image-uploader.php",
+          "params": {},
+          "header": {}
+        }
+      }
+    </script>
+  </msc-image-uploader>
+  <p class="msc-image-uploader-wrap__info"></p>
+</div>
+
+<script type="module">
+customElements.whenDefined('msc-image-uploader').then(() => {
+  const imageUploader = document.querySelector('msc-image-uploader');
+  const info = document.querySelector('.msc-image-uploader-wrap__info');
+  const maxCount = imageUploader.limitation.maxcount;
+  const events = [
+    'msc-image-uploader-pick',
+    'msc-image-uploader-error',
+    'msc-image-uploader-remove',
+    'msc-image-uploader-upload-done'
+  ];
+
+  const updateInfo = () => {
+    info.textContent = `${imageUploader.count} / ${maxCount}`;
+  };
+
+  const handler = (evt) => {
+    const { type, detail = null } = evt;
+    console.log(type);
+
+    switch (type) {
+      case 'msc-image-uploader-remove':
+      case 'msc-image-uploader-pick':
+        updateInfo();
+        break;
+
+      case 'msc-image-uploader-error':
+        console.log(detail.message);
+        break;
+
+      case 'msc-image-uploader-upload-done':
+        console.log(imageUploader.uploadInfo);
+        updateInfo();
+        break;
+    }
+  };
+
+  // events
+  events.map(
+    (event) => {
+      imageUploader.addEventListener(event, handler);
+    }
+  );
+
+  updateInfo();
+});
+</script>
+</body>
+
+</html>
