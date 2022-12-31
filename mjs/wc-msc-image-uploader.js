@@ -165,7 +165,7 @@ ${_wccss}
 .msc-image-uploader__unit__span::before{content:var(--label-hint-text);}
 .msc-image-uploader__unit__span:blank{display:none;}
 .msc-image-uploader__unit--label:focus-visible{--unit-overlay-opacity:var(--unit-overlay-opacity-active);}
-.msc-image-uploader__unit__input{position:absolute;inset-block-start:-100%;}
+.msc-image-uploader__unit__input{position:absolute;inset-block-start:0;visibility:hidden;opacity:0;}
 
 /* decoy */
 .msc-image-uploader__unit__decoy{position:fixed;inset-inline-start:var(--x);inset-block-start:var(--y);inline-size:var(--inline-size);block-size:var(--block-size);opacity:var(--decoy-opacity);display:none;}
