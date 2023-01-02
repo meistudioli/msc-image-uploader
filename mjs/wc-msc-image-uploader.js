@@ -516,6 +516,7 @@ export class MscImageUploader extends HTMLElement {
           break;
 
         case 'placeholder': {
+          const { maxcount } = this.limitation;
           let values;
 
           try {
@@ -533,7 +534,7 @@ export class MscImageUploader extends HTMLElement {
             (data = {}) => {
               return data?.src;
             }
-          );
+          ).slice(0, maxcount);
           break;
         }
 
@@ -583,13 +584,10 @@ export class MscImageUploader extends HTMLElement {
       }
 
       case 'placeholder': {
-        const { maxcount } = this.limitation;
-
         this.#clearUnits();
 
         const data = {};
         const units = this.placeholder
-          .slice(0, maxcount)
           .reduce(
             (acc, cur) => {
               const { src } = cur;
@@ -1281,8 +1279,7 @@ export class MscImageUploader extends HTMLElement {
     }
 
     const { maxcount } = this.limitation;
-    const { main, grids, input } = this.#nodes;
-    const currentCount = Array.from(grids.querySelectorAll('.msc-image-uploader__unit:not(label)')).length; 
+    const { main, input } = this.#nodes;
 
     main.classList.add('main--loading');
     const results = await Promise.all(
@@ -1310,7 +1307,7 @@ export class MscImageUploader extends HTMLElement {
           }
         }
       , [])
-      .slice(0, maxcount - currentCount)
+      .slice(0, maxcount - this.count)
       .forEach(
         (data) => {
           this.#upload(data);
