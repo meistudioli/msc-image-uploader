@@ -24,7 +24,8 @@ const defaults = {
   webservice: {
     url: '/',
     params: {},
-    header: {}
+    header: {},
+    timeout: 30 * 1000 // ms
   }
 };
 
@@ -539,12 +540,23 @@ export class MscImageUploader extends HTMLElement {
         case 'limitation':
         case 'webservice': {
           let values;
+          
           try {
             values = JSON.parse(newValue);
           } catch(err) {
             console.warn(`${_wcl.classToTagName(this.constructor.name)}: ${err.message}`);
             values = { ...defaults[attrName] };
           }
+
+          // webservice.timeout
+          if (attrName === 'webservice') {
+            let timeout = +values.timeout;
+            if (isNaN(timeout) || timeout <= 0) {
+              timeout = defaults.webservice.timeout;
+            }
+            values.timeout = timeout;
+          }
+
           this.#config[attrName] = values;
           break;
         }
@@ -961,12 +973,13 @@ export class MscImageUploader extends HTMLElement {
     const unit = grids.querySelector(`#${id}`);
     const progress = unit.querySelector('msc-circle-progress');
 
-    const { url, params, header } = this.webservice;
+    const { url, params, header, timeout } = this.webservice;
     const base = !/^http(s)?:\/\/.*/.test(url) ? window.location.origin : undefined;
     const fetchUrl = new URL(url, base);
 
     const xhr = new XMLHttpRequest();
     const fd = new FormData();
+    let iid = '';
 
     xhr.open('POST', fetchUrl, true);
     xhr.withCredentials = true;
@@ -996,6 +1009,7 @@ export class MscImageUploader extends HTMLElement {
         return;
       }
 
+      clearTimeout(iid);
       const { response, status } = xhr;
 
       try {
@@ -1034,6 +1048,11 @@ export class MscImageUploader extends HTMLElement {
     };
 
     xhr.send(fd);
+    iid = setTimeout(
+      () => {
+        xhr.abort();
+      }
+    , timeout);
   }
 
   _onClick(evt) {

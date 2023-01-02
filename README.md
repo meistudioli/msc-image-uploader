@@ -53,7 +53,8 @@ Put &lt;msc-image-uploader /> into HTML document. It will have different functio
           },
           "header": {
             "content-type": "application/json"
-          }
+          },
+          "timeout": 20000
         }
       }
   </script>
@@ -108,7 +109,8 @@ const config = {
   webservice: {
     url: '/',
     params: {},
-    header: {}
+    header: {},
+    timeout: 30000
   }
 };
 const nodeC = new MscImageUploader(config);
@@ -213,11 +215,12 @@ Set limitation for &lt;msc-image-uploader />. It should be JSON string. &lt;msc-
 
 - **webservice**
 
-Set web service information for &lt;msc-image-uploader />. It should be JSON string. Developers could set `url`、`params` and `header` here.
+Set web service information for &lt;msc-image-uploader />. It should be JSON string. Developers could set `url`、`params`、`header` and `timeout` here.
 
 - `url`：api address for upload image. Default is `/`.
 - `params`：Set parameters. Each of them will be attached with fetch. Default is `{}`.
 - `header`：Set fetch header. Default is `{}`.
+- `timeout`：Set timeout for fetch. Default is `30000` (ms).
 
 ```html
 <msc-image-uploader
@@ -245,7 +248,7 @@ Set placeholder for &lt;msc-image-uploader />. It should be JSON string. Each el
 | ----------- | ----------- | ----------- |
 | fieldname | String | Getter / Setter for fieldname. Each upload image fetch will apply this ad file's field name. Default is `image` (not set). |
 | limitation | Object | Getter / Setter for limitation. <msc-image-uploader /> will go through these rules when user picked files. |
-| webservice | Object | Getter / Setter for web service information. Developers could set `url`、`params` and `header`. |
+| webservice | Object | Getter / Setter for web service information. Developers could set `url`、`params`、`header` and `timeout`. |
 | placeholder | Array | Getter / Setter for placeholder. Each element should include `src` for thumbnail display. Default is `[]` (not set).|
 | processing | Boolean | Getter for <msc-image-uploader />'s fetching status. |
 | uploadInfo | Array | Getter for <msc-image-uploader />'s current uploaded information. |
