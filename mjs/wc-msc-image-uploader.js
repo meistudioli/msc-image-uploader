@@ -25,6 +25,7 @@ const defaults = {
     url: '/',
     params: {},
     header: {},
+    withCredentials: false,
     timeout: 30 * 1000 // ms
   }
 };
@@ -975,16 +976,16 @@ export class MscImageUploader extends HTMLElement {
     const unit = grids.querySelector(`#${id}`);
     const progress = unit.querySelector('msc-circle-progress');
 
-    const { url, params, header, timeout } = this.webservice;
+    const { url, params, header, timeout, withCredentials } = this.webservice;
     const base = !/^http(s)?:\/\/.*/.test(url) ? window.location.origin : undefined;
     const fetchUrl = new URL(url, base);
 
     const xhr = new XMLHttpRequest();
     const fd = new FormData();
-    let iid = '';
 
     xhr.open('POST', fetchUrl, true);
-    xhr.withCredentials = true;
+    xhr.timeout = timeout;
+    xhr.withCredentials = Boolean(withCredentials);
 
     // header
     Object.keys(header).forEach((key) => xhr.setRequestHeader(key, header[key]));
@@ -1011,7 +1012,6 @@ export class MscImageUploader extends HTMLElement {
         return;
       }
 
-      clearTimeout(iid);
       const { response, status } = xhr;
 
       try {
@@ -1050,11 +1050,6 @@ export class MscImageUploader extends HTMLElement {
     };
 
     xhr.send(fd);
-    iid = setTimeout(
-      () => {
-        xhr.abort();
-      }
-    , timeout);
   }
 
   _onClick(evt) {
