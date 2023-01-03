@@ -227,7 +227,7 @@ Set web service information for &lt;msc-image-uploader />. It should be JSON str
 
 ```html
 <msc-image-uploader
-  webservice='{"url":'/',"params":{},"header":{}}'
+  webservice='{"url":'/',"params":{},"header":{},"withCredentials":false,"timeout":30000}'
 >
   ...
 </msc-image-uploader>
