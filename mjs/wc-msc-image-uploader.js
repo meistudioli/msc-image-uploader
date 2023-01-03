@@ -462,6 +462,7 @@ export class MscImageUploader extends HTMLElement {
   async connectedCallback() {
     const { config, error } = await _wcl.getWCConfig(this);
     const { main, grids, input } = this.#nodes;
+    const html = document.querySelector('html');
 
     if (error) {
       console.warn(`${_wcl.classToTagName(this.constructor.name)}: ${error}`);
@@ -489,6 +490,9 @@ export class MscImageUploader extends HTMLElement {
 
     main.addEventListener('dragover', this._onDnD, { signal });
     main.addEventListener('drop', this._onDnD, { signal });
+
+    html.addEventListener('dragover', this._onDnD, { signal });
+    html.addEventListener('drop', this._onDnD, { signal });
 
     document.body.addEventListener('dragenter', this._onDnD, { signal });
     document.body.addEventListener('dragleave', this._onDnD, { signal });    
@@ -1247,13 +1251,16 @@ export class MscImageUploader extends HTMLElement {
       case 'drop': {
         evt.stopPropagation();
 
+        this.#data.counter = 0;
         main.classList.remove('msc-image-uploader--dnd');
 
-        this._onFilesChange({
-          target: {
-            files: dataTransfer.files
-          }
-        });
+        if (evt.target === main) {
+          this._onFilesChange({
+            target: {
+              files: dataTransfer.files
+            }
+          });
+        }
         break;
       }
     }
@@ -1280,6 +1287,7 @@ export class MscImageUploader extends HTMLElement {
 
     const { maxcount } = this.limitation;
     const { main, input } = this.#nodes;
+    this.#data.counter = 0;
 
     main.classList.add('main--loading');
     const results = await Promise.all(
