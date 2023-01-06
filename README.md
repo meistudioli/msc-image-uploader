@@ -28,6 +28,7 @@ Put &lt;msc-image-uploader /> into HTML document. It will have different functio
   <script type="application/json">
       {
         "fieldname": "image",
+        "multiple": true,
         "limitation": {
           "size": 52428800,
           "accept": ".jpg,.jpeg,.png,.gif,.webp,.avif",
@@ -99,6 +100,7 @@ nodeB.limitation = {
 // new instance with Class & default config
 const config = {
   fieldname: 'image',
+  multiple: false,
   limitation: {
     size: 52428800,
     accept: '.jpg,.jpeg,.png,.gif,.webp,.avif',
@@ -140,6 +142,7 @@ msc-image-uploader {
   --msc-image-uploader-gap: 12px;
   --msc-image-uploader-column-count: 4;
   --msc-image-uploader-dragging-opacity: .5;
+  --msc-image-uploader-unit-border-radius: 8px;
   --msc-image-uploader-focus-within-bgc: rgba(255 255 255/.01);
 
   --msc-image-uploader-main-drop-overlay-color: rgba(0 0 0/.7);
@@ -179,6 +182,40 @@ msc-image-uploader::part(decorations-1)::before {
   color: #f00;
 }
 </style>
+```
+
+Apply class - `msc-image-uploader--blank-trigger` will turn `trigger` into blank mode. That means trigger won't occupy any space and developers could use it for some special cases.
+
+```html
+<style>
+msc-image-uploader {
+  --msc-image-uploader-column-count: 1;
+  --msc-image-uploader-gap: 0px;
+  --msc-image-uploader-main-drop-hint-text: 'DROP HERE';
+  --msc-image-uploader-main-drop-hint-text-size: 16px;
+}
+</style>
+
+<msc-image-uploader class="msc-image-uploader--blank-trigger">
+  <script type="application/json">
+    {
+      "limitation": {
+        "size": 52428800,
+        "accept": ".jpg,.jpeg,.png,.gif,.webp,.avif",
+        "width": 400,
+        "height": 400,
+        "maxcount": 1
+      },
+      "webservice": {
+        "url": "https://your-domain/uploadApi",
+        "params": {},
+        "header": {},
+        "withCredentials": false,
+        "timeout": 30000
+      }
+    }
+  </script>
+</msc-image-uploader>
 ```
 
 ## Attributes
@@ -233,13 +270,24 @@ Set web service information for &lt;msc-image-uploader />. It should be JSON str
 </msc-image-uploader>
 ```
 
-## placeholder
+- **placeholder**
 
 Set placeholder for &lt;msc-image-uploader />. It should be JSON string. Each element should include `src` for thumbnail display. Default is `[]` (not set).
 
 ```html
 <msc-image-uploader
   placeholder='[{"src":"https://your-domain/img/img-0.jpg","other":"xxx"},{"src":"https://your-domain/img/img-1.jpg","other":"xxx"}]'
+>
+  ...
+</msc-image-uploader>
+```
+- **multiple**
+
+Enable &lt;msc-image-uploader /> multiple files picked mode. Default is `false` (not set).
+
+```html
+<msc-image-uploader
+  multiple
 >
   ...
 </msc-image-uploader>
@@ -253,9 +301,17 @@ Set placeholder for &lt;msc-image-uploader />. It should be JSON string. Each el
 | limitation | Object | Getter / Setter for limitation. <msc-image-uploader /> will go through these rules when user picked files. |
 | webservice | Object | Getter / Setter for web service information. Developers could set `url`、`params`、`header`、`withCredentials` and `timeout`. |
 | placeholder | Array | Getter / Setter for placeholder. Each element should include `src` for thumbnail display. Default is `[]` (not set).|
+| multiple | Boolean | Getter / Setter for multiple. Enable multiple files picked mode. Default is `false` (not set).|
 | processing | Boolean | Getter for <msc-image-uploader />'s fetching status. |
 | uploadInfo | Array | Getter for <msc-image-uploader />'s current uploaded information. |
 | count | Number | Getter for current <msc-image-uploader />'s uploaded units count. (include fails) |
+
+## Method
+
+| Method Signature | Description |
+| ----------- | ----------- |
+| showPicker | Summon native file picker. |
+| removeAll | Remove all uploaded units. |
 
 ## Event
 

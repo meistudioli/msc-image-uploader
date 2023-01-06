@@ -83,6 +83,7 @@ msc-image-uploader:not(:defined){display:none;}
   <msc-image-uploader>
     <script type="application/json">
       {
+        "multiple": true,
         "limitation": {
           "size": 52428800,
           "accept": ".jpg,.jpeg,.png,.gif,.webp,.avif",
@@ -144,14 +145,13 @@ msc-image-uploader:not(:defined){display:none;}
       }
     </script>
   </msc-image-uploader>
-  <p class="msc-image-uploader-wrap__info"></p>
+  <p class="msc-image-uploader-wrap__info">14 / 25</p>
 </div>
 
 <script type="module">
 customElements.whenDefined('msc-image-uploader').then(() => {
   const imageUploader = document.querySelector('msc-image-uploader');
   const info = document.querySelector('.msc-image-uploader-wrap__info');
-  const maxCount = imageUploader.limitation.maxcount;
   const events = [
     'msc-image-uploader-pick',
     'msc-image-uploader-error',
@@ -160,6 +160,7 @@ customElements.whenDefined('msc-image-uploader').then(() => {
   ];
 
   const updateInfo = () => {
+    const maxCount = imageUploader.limitation.maxcount;
     info.textContent = `${imageUploader.count} / ${maxCount}`;
   };
 
@@ -190,8 +191,6 @@ customElements.whenDefined('msc-image-uploader').then(() => {
       imageUploader.addEventListener(event, handler);
     }
   );
-
-  updateInfo();
 });
 </script>
 </body>

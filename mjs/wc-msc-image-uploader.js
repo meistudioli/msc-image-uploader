@@ -13,6 +13,7 @@ import './wc-msc-circle-progress.js';
 
 const defaults = {
   fieldname: 'image',
+  multiple: false,
   limitation: {
     size: 52428800,
     accept: '.jpg,.jpeg,.png,.gif,.webp,.avif',
@@ -30,7 +31,7 @@ const defaults = {
   }
 };
 
-const booleanAttrs = [];
+const booleanAttrs = ['multiple'];
 const objectAttrs = ['limitation', 'placeholder', 'webservice'];
 const custumEvents = {
   pick: 'msc-image-uploader-pick',
@@ -59,14 +60,16 @@ ${_wccss}
   --column-count: var(--msc-image-uploader-column-count, 4);
   --main-padding: .25em;
   --decoy-opacity: var(--msc-image-uploader-dragging-opacity, .5);
+  --border-radius: var(--msc-image-uploader-unit-border-radius, 8px);
 
   /* main */
   --main-dnd-bgc: var(--msc-image-uploader-main-drop-overlay-color, rgba(0 0 0/.7));
   --main-dnd-hint-text-color: var(--msc-image-uploader-main-drop-hint-text-color, rgba(255 255 255));
   --main-dnd-hint-text-size: var(--msc-image-uploader-main-drop-hint-text-size, 40px);
   --main-dnd-hint-text: var(--msc-image-uploader-main-drop-hint-text, 'DROP IMAGES HERE.');
+  --main-dnd-display: var(--msc-image-uploader-main-drop-display, none);
   --main-focus-within-bgc: var(--msc-image-uploader-focus-within-bgc, rgba(255 255 255/.01));
-
+  
   /* progress */
   --progress-size: clamp(1em, 14%, 1.8em);
   --bgc-progress: rgba(0 0 0/.15);
@@ -108,7 +111,7 @@ ${_wccss}
 }
 
 .msc-image-uploader__unit {
-  --unit-border-radius: .5em;
+  --unit-border-radius: var(--border-radius);
   --unit-indicator-pointer-events: none;
 
   --unit-border-color: var(--msc-image-uploader-unit-focus-border-color, #69a2f9);
@@ -138,7 +141,9 @@ ${_wccss}
   --block-size: 0px;
 }
 
-.main{outline:0 none;}
+.main{position:relative;outline:0 none;}
+.main::before{position:absolute;inset-inline-start:0;inset-block-start:0;inline-size:100%;block-size:100%;content:'';background-color:var(--main-dnd-bgc);z-index:4;border-radius:var(--border-radius);overflow:hidden;display:var(--main-dnd-display);}
+.main::after{position:absolute;inset-inline:0;inset-block:0;margin:auto;inline-size:fit-content;block-size:fit-content;font-size:var(--main-dnd-hint-text-size);color:var(--main-dnd-hint-text-color);content:var(--main-dnd-hint-text);z-index:5;display:var(--main-dnd-display);}
 .main:focus-within{background-color:var(--main-focus-within-bgc);}
 
 .grids{padding:var(--gap);display:grid;grid-template-columns:repeat(var(--column-count),1fr);gap:var(--gap);}
@@ -162,7 +167,7 @@ ${_wccss}
 .msc-image-uploader__unit--label{position:relative;display:flex;align-items:center;flex-direction:column;justify-content:center;gap:.25em;background-color:var(--label-bgc);overflow:hidden;}
 .msc-image-uploader__unit--label::after{opacity:0;}
 .msc-image-uploader__unit--label:active{transform:scale(.95);}
-.msc-image-uploader__unit__icon{content:'';inline-size:3em;block-size:3em;background-color:var(--label-color);clip-path:var(--label-mask);display:block;opacity:1;}
+.msc-image-uploader__unit__icon{inline-size:3em;block-size:3em;background-color:var(--label-color);clip-path:var(--label-mask);display:block;opacity:1;}
 .msc-image-uploader__unit__span{font-size:.875em;color:var(--label-color);white-space:nowrap;}
 .msc-image-uploader__unit__span::before{content:var(--label-hint-text);}
 .msc-image-uploader__unit__span:blank{display:none;}
@@ -196,11 +201,6 @@ ${_wccss}
   50% { opacity: 1; }
   100%{ opacity: .5; }
 }
-
-/* dnd */
-.msc-image-uploader--dnd{position:relative;}
-.msc-image-uploader--dnd::before{position:absolute;inset-inline-start:0;inset-block-start:0;inline-size:100%;block-size:100%;content:'';background-color:var(--main-dnd-bgc);z-index:4;}
-.msc-image-uploader--dnd::after{position:absolute;inset-inline:0;inset-block:0;margin:auto;inline-size:fit-content;block-size:fit-content;font-size:var(--main-dnd-hint-text-size);color:var(--main-dnd-hint-text-color);content:var(--main-dnd-hint-text);z-index:5;}
 
 /* loading: https://loading.io/css/ */
 .msc-image-uploader__loading{position:absolute;inset-inline-end:var(--gap);inset-block-end:var(--gap);inline-size:80px;block-size:80px;border-radius:80px;background-color:var(--loading-bgc);transform:scale(.5);transform-origin:100% 100%;pointer-events:none;z-index:3;transition:opacity 200ms ease;will-change:opacity;opacity:var(--loading-opacity);}
@@ -255,6 +255,15 @@ ${_wccss}
 .main[data-action=dragging] .msc-image-uploader__unit__button{pointer-events:none;}
 .main--mutate{}
 
+/* msc-image-uploader--blank-trigger */
+:host(.msc-image-uploader--blank-trigger) .main[data-action] .msc-image-uploader__unit--label{visibility:hidden;}
+:host(.msc-image-uploader--blank-trigger) .msc-image-uploader__unit--label:not(:only-child) {
+  position: absolute;
+  inset-inline-start: var(--gap);
+  inset-block-start: var(--gap);
+  inline-size: calc((100% - (var(--gap) * 2) - ((var(--column-count) - 1) * var(--gap))) /  var(--column-count));
+}
+
 @media (hover: hover) {
   .msc-image-uploader__unit:not(.msc-image-uploader__unit__decoy):hover::before{--unit-overlay-opacity:var(--unit-overlay-opacity-active);}
   .msc-image-uploader__unit__button:hover{--button-bgc-opacity:var(--button-bgc-opacity-active);}
@@ -277,7 +286,7 @@ ${_wccss}
     <label class="msc-image-uploader__unit msc-image-uploader__unit--label" aria-label="pick images" tabindex="0">
       <em class="msc-image-uploader__unit__icon stuff"></em>
       <span class="msc-image-uploader__unit__span"></span>
-      <input class="msc-image-uploader__unit__input" type="file" multiple accept="${defaults.limitation.accept}" tabindex="-1" />
+      <input class="msc-image-uploader__unit__input" type="file" multiple1 accept="${defaults.limitation.accept}" tabindex="-1" />
     </label>
   </div>
 
@@ -333,6 +342,13 @@ if (CSS?.registerProperty) {
       syntax: '<number>',
       inherits: true,
       initialValue: '.5'
+    });
+
+    CSS.registerProperty({
+      name: '--msc-image-uploader-unit-border-radius',
+      syntax: '<length>',
+      inherits: true,
+      initialValue: '8px'
     });
 
     CSS.registerProperty({
@@ -427,8 +443,7 @@ export class MscImageUploader extends HTMLElement {
       ddController: '',
       dX: 0,
       dY: 0,
-      units: {},
-      counter: 0
+      units: {}
     };
 
     // nodes
@@ -463,7 +478,6 @@ export class MscImageUploader extends HTMLElement {
   async connectedCallback() {
     const { config, error } = await _wcl.getWCConfig(this);
     const { main, grids, input } = this.#nodes;
-    const html = document.querySelector('html');
 
     if (error) {
       console.warn(`${_wcl.classToTagName(this.constructor.name)}: ${error}`);
@@ -490,13 +504,7 @@ export class MscImageUploader extends HTMLElement {
     main.addEventListener('paste', this._onPaste, { signal });
 
     main.addEventListener('dragover', this._onDnD, { signal });
-    main.addEventListener('drop', this._onDnD, { signal });
-
-    html.addEventListener('dragover', this._onDnD, { signal });
-    html.addEventListener('drop', this._onDnD, { signal });
-
-    document.body.addEventListener('dragenter', this._onDnD, { signal });
-    document.body.addEventListener('dragleave', this._onDnD, { signal });    
+    main.addEventListener('drop', this._onDnD, { signal });   
   }
 
   disconnectedCallback() {
@@ -518,6 +526,10 @@ export class MscImageUploader extends HTMLElement {
       switch (attrName) {
         case 'fieldname':
           this.#config[attrName] = newValue.length > 0 ? newValue : defaults.fieldname;
+          break;
+
+        case 'multiple':
+          this.#config[attrName] = true;
           break;
 
         case 'placeholder': {
@@ -582,6 +594,10 @@ export class MscImageUploader extends HTMLElement {
     this.#format(attrName, oldValue, newValue);
 
     switch (attrName) {
+      case 'multiple':
+        this.#nodes.input.multiple = this.multiple;
+        break;
+
       case 'limitation': {
         const { accept } = this.limitation;
         this.#nodes.input.accept = accept;
@@ -589,7 +605,7 @@ export class MscImageUploader extends HTMLElement {
       }
 
       case 'placeholder': {
-        this.#clearUnits();
+        this.removeAll();
 
         const data = {};
         const units = this.placeholder
@@ -717,6 +733,14 @@ export class MscImageUploader extends HTMLElement {
     return this.#config.placeholder;
   }
 
+  set multiple(value) {
+    this.toggleAttribute('multiple', Boolean(value));
+  }
+
+  get multiple() {
+    return this.#config.multiple;
+  }
+
   get processing() {
     return Array.from(this.#nodes.grids.querySelectorAll('.msc-image-uploader__unit[data-status=process]')).length > 0;
   }
@@ -765,17 +789,6 @@ export class MscImageUploader extends HTMLElement {
         ...(detail && { detail })
       }
     ));
-  }
-
-  #clearUnits() {
-    const { grids } = this.#nodes;
-
-    Array.from(grids.querySelectorAll('.msc-image-uploader__unit:not(label)'))
-      .forEach(
-        (unit) => {
-          unit.remove();
-        }
-      );
   }
 
   #mutateSize({ width, height }) {
@@ -1224,40 +1237,17 @@ export class MscImageUploader extends HTMLElement {
 
   _onDnD(evt) {
     const { type, dataTransfer } = evt;
-    const { main } = this.#nodes;
 
     evt.preventDefault();
 
-    switch (type) {
-      case 'dragenter': {
-        this.#data.counter++;
-        main.classList.add('msc-image-uploader--dnd');
-        break;
-      }
+    if (type === 'drop') {
+      evt.stopPropagation();
 
-      case 'dragleave': {
-        this.#data.counter--;
-        if (this.#data.counter === 0) {
-          main.classList.remove('msc-image-uploader--dnd');
+      this._onFilesChange({
+        target: {
+          files: dataTransfer.files
         }
-        break;
-      }
-
-      case 'drop': {
-        evt.stopPropagation();
-
-        this.#data.counter = 0;
-        main.classList.remove('msc-image-uploader--dnd');
-
-        if (evt.target === main) {
-          this._onFilesChange({
-            target: {
-              files: dataTransfer.files
-            }
-          });
-        }
-        break;
-      }
+      });
     }
   }
 
@@ -1282,7 +1272,6 @@ export class MscImageUploader extends HTMLElement {
 
     const { maxcount } = this.limitation;
     const { main, input } = this.#nodes;
-    this.#data.counter = 0;
 
     main.classList.add('main--loading');
     const results = await Promise.all(
@@ -1320,11 +1309,64 @@ export class MscImageUploader extends HTMLElement {
     input.value = '';
     this.#fireEvent(custumEvents.pick);
   }
+
+  showPicker() {
+    this.#nodes.input?.showPicker();
+  }
+
+  removeAll() {
+    const { grids } = this.#nodes;
+
+    Array.from(grids.querySelectorAll('.msc-image-uploader__unit:not(label)'))
+      .forEach(
+        (unit) => {
+          unit.remove();
+        }
+      );
+
+    this.#updateStorage();
+  }
 }
 
 // define web component
 const S = _wcl.supports();
-const T = _wcl.classToTagName('MscImageUploader');
+const T = _wcl.classToTagName(MscImageUploader.name);
 if (S.customElements && S.shadowDOM && S.template && !window.customElements.get(T)) {
-  window.customElements.define(_wcl.classToTagName('MscImageUploader'), MscImageUploader);
+  window.customElements.define(T, MscImageUploader);
+
+  // handle root dd and prevent default
+  _wcl.addStylesheetRules(
+  '.msc-image-uploader--dnd',
+    {
+      '--msc-image-uploader-main-drop-display': 'block'
+    }
+  );
+
+  let counter = 0;
+  const html = document.querySelector('html');
+  const handler = (evt) => {
+    evt.preventDefault();
+
+    switch (evt.type) {
+      case 'dragenter':
+        counter += 1;
+        break;
+
+      case 'dragleave':
+        counter -= 1;
+        break;
+
+      case 'drop':
+        counter = 0;
+        break;
+    }
+
+    document.body.classList.toggle('msc-image-uploader--dnd', Boolean(counter));
+  };
+  
+  ['dragenter', 'dragleave', 'dragover', 'drop'].forEach(
+    (evt) => {
+      html.addEventListener(evt, handler, { capture:true });
+    }
+  );
 }
