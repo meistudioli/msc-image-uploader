@@ -1145,6 +1145,8 @@ export class MscImageUploader extends HTMLElement {
     
     activeTarget.dataset.status = activeTarget.dataset.formerstatus;
     delete activeTarget.dataset.formerstatus;
+
+    this.#updateStorage();
   }
 
   _onAnimationEnd(evt) {
