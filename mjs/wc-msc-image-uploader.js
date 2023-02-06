@@ -1029,7 +1029,12 @@ export class MscImageUploader extends HTMLElement {
 
       try {
         if (!/^2\d{2,}/.test(status)) {
-          throw new Error('fetch is not a successful responses.');
+          throw new Error(
+            'fetch is not a successful responses.',
+            {
+              cause: response || ''
+            }
+          );
         }
 
         unit.dataset.status = 'normal';
@@ -1038,7 +1043,7 @@ export class MscImageUploader extends HTMLElement {
         };
       } catch(err) {
         console.warn(`${_wcl.classToTagName(this.constructor.name)}: ${err.message}`);
-        this.#fireEvent(custumEvents.error, { message:err.message });
+        this.#fireEvent(custumEvents.error, { message:err.message, cause:err?.cause });
 
         unit.dataset.status = 'warn';
       }

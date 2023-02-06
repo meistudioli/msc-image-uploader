@@ -174,9 +174,11 @@ customElements.whenDefined('msc-image-uploader').then(() => {
         updateInfo();
         break;
 
-      case 'msc-image-uploader-error':
-        console.log(detail.message);
+      case 'msc-image-uploader-error': {
+        const { message, cause } = detail;
+        console.log(message, cause);
         break;
+      }
 
       case 'msc-image-uploader-upload-done':
         console.log(imageUploader.uploadInfo);

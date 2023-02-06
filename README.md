@@ -318,7 +318,7 @@ Enable &lt;msc-image-uploader /> multiple files picked mode. Default is `false` 
 | Event Signature | Description |
 | ----------- | ----------- |
 | msc-image-uploader-pick | Fired when users picked files. |
-| msc-image-uploader-error | Fired when <msc-image-uploader /> occured errors. (validation & fetch) |
+| msc-image-uploader-error | Fired when <msc-image-uploader /> occured errors (validation & fetch). Developers could get `message` and `cause` from `event.detail`. |
 | msc-image-uploader-remove | Fired when <msc-image-uploader /> removed unit successed. |
 | msc-image-uploader-upload-done | Fired when <msc-image-uploader /> finished fetching. |
 
