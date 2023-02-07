@@ -140,7 +140,7 @@ msc-image-uploader:not(:defined){display:none;}
           "params": {},
           "header": {},
           "withCredentials": false,
-          "timeout": 20000
+          "timeout": 30000
         }
       }
     </script>
@@ -176,7 +176,12 @@ customElements.whenDefined('msc-image-uploader').then(() => {
 
       case 'msc-image-uploader-error': {
         const { message, cause } = detail;
-        console.log(message, cause);
+
+        if (cause) {
+          console.log('cause', cause);
+        }
+
+        console.log(message);
         break;
       }
 

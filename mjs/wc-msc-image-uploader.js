@@ -9,6 +9,7 @@ import './wc-msc-circle-progress.js';
  - https://loading.io/css/
  - https://web.dev/at-property/
  - https://developer.mozilla.org/en-US/docs/Web/CSS/::part
+ - https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Error/Error
  */
 
 const defaults = {
@@ -286,7 +287,7 @@ ${_wccss}
     <label class="msc-image-uploader__unit msc-image-uploader__unit--label" aria-label="pick images" tabindex="0">
       <em class="msc-image-uploader__unit__icon stuff"></em>
       <span class="msc-image-uploader__unit__span"></span>
-      <input class="msc-image-uploader__unit__input" type="file" multiple1 accept="${defaults.limitation.accept}" tabindex="-1" />
+      <input class="msc-image-uploader__unit__input" type="file" accept="${defaults.limitation.accept}" tabindex="-1" />
     </label>
   </div>
 
@@ -746,7 +747,7 @@ export class MscImageUploader extends HTMLElement {
   }
 
   get uploadInfo() {
-    const units = Array.from(this.#nodes.grids.querySelectorAll('.msc-image-uploader__unit[data-status=normal]'));
+    const units =  Array.from(this.#nodes.grids.querySelectorAll('.msc-image-uploader__unit:not(label)'));
 
     return units.reduce(
       (acc, unit) => {
@@ -778,7 +779,7 @@ export class MscImageUploader extends HTMLElement {
       this.appendChild(storage);
     }
 
-    storage.value = JSON.stringify(this.uploadInfo);
+    storage.value = JSON.stringify(this.uploadInfo.filter(({ error }) => !error));
   }
 
   #fireEvent(evtName, detail) {
@@ -1020,6 +1021,33 @@ export class MscImageUploader extends HTMLElement {
       progress.value = 100;
     };
 
+    xhr.ontimeout = () => {
+      unit.dataset.status = 'warn';
+      this.#data.units[id] = {
+        error: {
+          message: 'fetch timeout.'
+        }
+      };
+    };
+
+    xhr.onabort = () => {
+      unit.dataset.status = 'warn';
+      this.#data.units[id] = {
+        error: {
+          message: 'fetch abort.'
+        }
+      };
+    };
+
+    xhr.onerror = () => {
+      unit.dataset.status = 'warn';
+      this.#data.units[id] = {
+        error: {
+          message: 'fetch unknow error.'
+        }
+      };
+    };
+
     xhr.onreadystatechange = () => {
       if (xhr.readyState !== 4) {
         return;
@@ -1028,43 +1056,48 @@ export class MscImageUploader extends HTMLElement {
       const { response, status } = xhr;
 
       try {
+        const data = (response?.length > 0) ? JSON.parse(response) : {};
+
         if (!/^2\d{2,}/.test(status)) {
-          throw new Error(
-            'fetch is not a successful responses.',
-            {
-              cause: response || ''
-            }
-          );
+          throw new Error('fetch is not a successful responses.', {
+            ...(Object.keys(data).length > 0 && { cause: data })
+          });
         }
 
         unit.dataset.status = 'normal';
         this.#data.units[id] = {
-          ...JSON.parse(response)
+          ...data
         };
       } catch(err) {
         console.warn(`${_wcl.classToTagName(this.constructor.name)}: ${err.message}`);
-        this.#fireEvent(custumEvents.error, { message:err.message, cause:err?.cause });
+        const cause = (typeof err.cause !== 'undefined') ? err.cause : undefined;
+
+        this.#fireEvent(custumEvents.error, {
+          message:err.message,
+          ...(cause && { cause })
+        });
 
         unit.dataset.status = 'warn';
+        this.#data.units[id] = {
+          error: {
+            message: err.message,
+            ...(cause && { cause })
+          }
+        };
       }
 
       this.#updateStorage();
 
       if (!this.processing) {
-        this.#fireEvent(custumEvents.done);
+        const timer = status === 0 ? 100 : 0;
+
+        // need to wait for other event update unit data once error occured
+        setTimeout(
+          () => {
+            this.#fireEvent(custumEvents.done);
+          }
+        , timer);
       }
-    };
-
-    xhr.ontimeout = () => {
-      unit.dataset.status = 'warn';
-    };
-
-    xhr.onabort = () => {
-      unit.dataset.status = 'warn';
-    };
-
-    xhr.onerror = () => {
-      unit.dataset.status = 'warn';
     };
 
     xhr.send(fd);
@@ -1331,6 +1364,8 @@ export class MscImageUploader extends HTMLElement {
         }
       );
 
+    this.#data.units = {};
+    this.#fireEvent(custumEvents.remove);
     this.#updateStorage();
   }
 }

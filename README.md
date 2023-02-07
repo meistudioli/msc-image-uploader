@@ -56,7 +56,7 @@ Put &lt;msc-image-uploader /> into HTML document. It will have different functio
             "content-type": "application/json"
           },
           "withCredentials": false,
-          "timeout": 20000
+          "timeout": 30000
         }
       }
   </script>
@@ -124,7 +124,8 @@ document.body.appendChild(nodeC);
 
 ## Storage
 
-&lt;msc-image-uploader /> will generate (query) an `input[type=hidden]` as storage. &lt;input /> default name is `msc-image-upload`, developers can switch any name they liked.
+&lt;msc-image-uploader /> will generate an `input[type=hidden]` as storage and put success uploaded data as its value. &lt;input /> default name is `msc-image-upload`, developers can switch any name they liked.
+
 
 ```html
 <msc-image-uploader>
@@ -303,8 +304,8 @@ Enable &lt;msc-image-uploader /> multiple files picked mode. Default is `false` 
 | placeholder | Array | Getter / Setter for placeholder. Each element should include `src` for thumbnail display. Default is `[]` (not set).|
 | multiple | Boolean | Getter / Setter for multiple. Enable multiple files picked mode. Default is `false` (not set).|
 | processing | Boolean | Getter for <msc-image-uploader />'s fetching status. |
-| uploadInfo | Array | Getter for <msc-image-uploader />'s current uploaded information. |
-| count | Number | Getter for current <msc-image-uploader />'s uploaded units count. (include fails) |
+| uploadInfo | Array | Getter for <msc-image-uploader />'s current uploaded information. Developers could check `error` key exist to know data is clean to take or not. |
+| count | Number | Getter for current <msc-image-uploader />'s uploaded units count. |
 
 ## Method
 
@@ -318,7 +319,7 @@ Enable &lt;msc-image-uploader /> multiple files picked mode. Default is `false` 
 | Event Signature | Description |
 | ----------- | ----------- |
 | msc-image-uploader-pick | Fired when users picked files. |
-| msc-image-uploader-error | Fired when <msc-image-uploader /> occured errors (validation & fetch). Developers could get `message` and `cause` from `event.detail`. |
+| msc-image-uploader-error | Fired when <msc-image-uploader /> occured errors (validation & fetch). Developers can gather information through `event.detail`. (<msc-image-uploader /> will put server response to event.detail.`cause`) |
 | msc-image-uploader-remove | Fired when <msc-image-uploader /> removed unit successed. |
 | msc-image-uploader-upload-done | Fired when <msc-image-uploader /> finished fetching. |
 
