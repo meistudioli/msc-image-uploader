@@ -1365,7 +1365,6 @@ export class MscImageUploader extends HTMLElement {
       );
 
     this.#data.units = {};
-    this.#fireEvent(custumEvents.remove);
     this.#updateStorage();
   }
 }

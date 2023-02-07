@@ -1,6 +1,6 @@
 {
   "name": "msc-image-uploader",
-  "version": "1.0.9",
+  "version": "1.0.10",
   "description": "<msc-image-uploader /> is a web component based image uploader. Users could pick & upload images by 「file picker」、「drag & drop」and even direct「paste」image content. Besides that, users could also change images sorting through 「drag & drop」or 「keyboard arrow keys」. With rich config setting, developers can set up placeholder and limitation for different scenarios.",
   "main": "index.html",
   "scripts": {
