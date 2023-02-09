@@ -161,7 +161,7 @@ msc-image-uploader {
 </style>
 ```
 
-Otherwise, apply pseudo class `::part(decoration)` to direct style each unit. Besides that, developers cpuld also apply pseudo class `::part(decoration-{n})` for specific unit.
+Otherwise, apply pseudo class `::part(decoration)` to direct style each unit. Besides that, developers could also apply pseudo class `::part(decoration-{n})` for specific unit.
 
 ```html
 <style>
