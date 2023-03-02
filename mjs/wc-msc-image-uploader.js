@@ -1181,7 +1181,10 @@ export class MscImageUploader extends HTMLElement {
     delete main.dataset.action;
     decoy.classList.toggle('msc-image-uploader__unit__decoy--show', false);
     
-    activeTarget.dataset.status = activeTarget.dataset.formerstatus;
+    const { formerstatus } = activeTarget.dataset;
+    if (formerstatus !== 'process') {
+      activeTarget.dataset.status = formerstatus;
+    }
     delete activeTarget.dataset.formerstatus;
 
     this.#updateStorage();
