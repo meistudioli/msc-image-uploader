@@ -15,7 +15,7 @@
 ```html
 <script
   type="module"
-  src="https://your-domain/wc-msc-image-uploader.js">        
+  src="https://unpkg.com/msc-image-uploader/mjs/wc-msc-image-uploader.js">        
 </script>
 ```
 
@@ -78,7 +78,7 @@ Otherwise, developers could also choose remoteconfig to fetch config for &lt;msc
 
 ```html
 <script type="module">
-import { MscImageUploader } from 'https://your-domain/wc-msc-image-uploader.js';
+import { MscImageUploader } from 'https://unpkg.com/msc-image-uploader/mjs/wc-msc-image-uploader.js';
 
 // use DOM api
 const nodeA = document.createElement('msc-image-uploader');

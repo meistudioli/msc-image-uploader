@@ -29,7 +29,7 @@ a{cursor:pointer;text-decoration:none;}
 .flex-center{display:flex;justify-content:center;align-items:center;}
 .force-radius{overflow:hidden;transform:translate3d(0, 0, 0);border-radius:var(--r, 8px);}
 
-:host{all:initial;font-family:system-ui,sans-serif;text-size-adjust:100%;-ms-text-size-adjust:100%;-webkit-text-size-adjust:100%;font-size:16px;-webkit-tap-highlight-color:transparent;}
+:host{all:initial;font-family:system-ui,sans-serif;text-size-adjust:100%;-ms-text-size-adjust:100%;-webkit-text-size-adjust:100%;font-size:16px;-webkit-tap-highlight-color:transparent;-webkit-print-color-adjust:exact;print-color-adjust:exact;}
 :host {
   /**
    * safe area variables for iX design
@@ -40,7 +40,7 @@ a{cursor:pointer;text-decoration:none;}
   --safe-area-bottom: 0px;
 }
 @supports (bottom: env(safe-area-inset-top)) {
-  :root {
+  :host {
     --safe-area-left: env(safe-area-inset-left);
     --safe-area-right: env(safe-area-inset-right);
     --safe-area-top: env(safe-area-inset-top);

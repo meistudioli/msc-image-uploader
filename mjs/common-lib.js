@@ -18,7 +18,7 @@ Object.defineProperties(_wcl, {
       let error, config;
 
       const remoteconfig = host.getAttribute('remoteconfig');
-      const script = host.querySelector('script');
+      const script = host.querySelector(':scope > script[type="application/json"]');
 
       if (remoteconfig) {
         // fetch remote config once [remoteconfig] exist
@@ -537,17 +537,25 @@ Object.defineProperties(_wcl, {
     configurable: true,
     enumerable: true,
     value: function(e) {
-      let x, y, docElement, body;
+      let x, y, clientX, clientY, docElement, body;
       
       docElement = document.documentElement;
 
+      if (e?.touches && e?.touches?.length > 0) {
+        clientX = e?.touches?.[0]?.clientX;
+        clientY = e?.touches?.[0]?.clientY;
+      } else {
+        clientX = e.clientX;
+        clientY = e.clientY;
+      }
+
       //x
       body = document.body || { scrollLeft: 0 };
-      x = e.pageX || (e.clientX + (docElement.scrollLeft || body.scrollLeft) - (docElement.clientLeft || 0));
+      x = e?.pageX || (clientX + (docElement.scrollLeft || body.scrollLeft) - (docElement.clientLeft || 0));
 
       //y
       body = document.body || { scrollTop: 0 };
-      y = e.pageY || (e.clientY + (docElement.scrollTop || body.scrollTop) - (docElement.clientTop || 0));
+      y = e?.pageY || (clientY + (docElement.scrollTop || body.scrollTop) - (docElement.clientTop || 0));
 
       return { x, y };
     }
@@ -768,6 +776,15 @@ Object.defineProperties(_wcl, {
       return Math.floor(Math.random() * (max - min + 1) + min);
     }
   },
+  getRandomIntInclusive: {
+    configurable: true,
+    enumerable: true,
+    value: (min, max) => {
+      min = Math.ceil(min);
+      max = Math.floor(max);
+      return Math.floor(Math.random() * (max - min + 1)) + min;
+    }
+  },
   grabStyleSheet: {
     configurable: true,
     enumerable: true,
@@ -802,6 +819,106 @@ Object.defineProperties(_wcl, {
       return scrollbarWidth > 0;
     }
   },
+
+  isObjectsEqual: {
+    configurable: true,
+    enumerable: true,
+    value: function(obj1, obj2) {
+      const obj1Keys = Object.keys(obj1).sort();
+      const obj2Keys = Object.keys(obj2).sort();
+      let objEqual = false;
+
+      if (obj1Keys.length !== obj2Keys.length) {
+        objEqual = false;
+      } else {
+        objEqual = obj1Keys.every((key, index) => {
+          const objValue1 = obj1[key];
+          const objValue2 = obj2[obj2Keys[index]];
+          return objValue1 === objValue2;
+        });
+      }
+
+      return objEqual;
+    }
+  },
+
+  isValidURL: {
+    configurable: true,
+    enumerable: true,
+    value: function(url) {
+      try { 
+        return Boolean(new URL(url)); 
+      }
+      catch(e){ 
+        return false; 
+      }
+    }
+  },
+
+  loadImage: {
+    configurable: true,
+    enumerable: true,
+    value: function(url, crossOrigin = '') {
+      return new Promise(
+        (resolve, reject) => {
+          const img = new Image();
+          
+          img.onload = () => {
+            resolve(img);
+          };
+
+          img.onerror = (e) => {
+            reject(e);
+          };
+
+          if (!!crossOrigin) {
+            img.crossOrigin = crossOrigin;
+          }
+          
+          img.src = url;
+        }
+      );
+    }
+  },
+
+  prepareFetch: {
+    configurable: true,
+    enumerable: true,
+    value: function(timeout = 5000) {
+      const fetchController = new AbortController();
+      const signal = fetchController.signal;
+
+      // timeout
+      setTimeout(() => fetchController.abort(), timeout);
+
+      return signal;
+    }
+  },
+
+  cloneStyleSheetsToDocument: {
+    configurable: true,
+    enumerable: true,
+    value: function(targetDocument) {
+      [...document.styleSheets].forEach((styleSheet) => {
+        try {
+          const cssRules = [...styleSheet.cssRules].map((rule) => rule.cssText).join('');
+          const style = document.createElement('style');
+
+          style.textContent = cssRules;
+          targetDocument.head.appendChild(style);
+        } catch (e) {
+          const link = document.createElement('link');
+
+          link.rel = 'stylesheet';
+          link.type = styleSheet.type;
+          link.media = styleSheet.media;
+          link.href = styleSheet.href;
+          targetDocument.head.appendChild(link);
+        }
+      });
+    }
+  },
+
   addStylesheetRules: {
     configurable: true,
     enumerable: true,

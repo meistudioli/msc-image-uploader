@@ -299,7 +299,7 @@ ${_wccss}
   </div>
 
   <div class="msc-image-uploader__unit msc-image-uploader__unit__decoy msc-image-uploader__unit__decoy--mutate-size msc-image-uploader__unit__decoy--mutate-axis">
-    <img class="msc-image-uploader__unit__img" src="https://picsum.photos/id/111/200/200" width="1" height="1" />
+    <img class="msc-image-uploader__unit__img" src="data:image/gif;base64,R0lGODlhAQABAIAAAP///wAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw==" width="1" height="1" />
   </div>
 </div>
 `;
