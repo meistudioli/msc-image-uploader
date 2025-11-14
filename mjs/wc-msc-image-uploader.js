@@ -1317,7 +1317,7 @@ export class MscImageUploader extends HTMLElement {
     const { main, input } = this.#nodes;
 
     main.classList.add('main--loading');
-    const results = await Promise.all(
+    let results = await Promise.all(
       Array.from(files).map(
         (file) => {
           return this.#validation(file);
@@ -1327,7 +1327,7 @@ export class MscImageUploader extends HTMLElement {
     main.classList.remove('main--loading');
 
     // upload
-    results
+    results = results
       .reduce(
         (acc, cur) => {
           const { dataURL, file } = cur;
@@ -1342,15 +1342,16 @@ export class MscImageUploader extends HTMLElement {
           }
         }
       , [])
-      .slice(0, maxcount - this.count)
-      .forEach(
-        (data) => {
-          this.#upload(data);
-        }
-      );
+      .slice(0, maxcount - this.count);
+
+    results.forEach(
+      (data) => {
+        this.#upload(data);
+      }
+    );
 
     input.value = '';
-    this.#fireEvent(custumEvents.pick);
+    this.#fireEvent(custumEvents.pick, { pickedFiles: results });
   }
 
   showPicker() {
